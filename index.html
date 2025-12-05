@@ -363,51 +363,9 @@
 
     <!-- Content -->
     <div class="content">
-        <!-- Reservas -->
+        <!-- Reservas Proveedor -->
         <div id="tabReservas" class="tab-content active">
             <div class="stats-grid" id="statsContainer"></div>
-
-            <div class="form-container" id="formContainer" style="display: none;">
-                <h2>➕ Nueva Reserva</h2>
-                <div class="form-grid">
-                    <div>
-                        <label>Fecha</label>
-                        <input type="date" id="formFecha">
-                    </div>
-                    <div>
-                        <label>Hora Inicio</label>
-                        <input type="time" id="formHoraInicio">
-                    </div>
-                </div>
-                <div class="form-grid">
-                    <div>
-                        <label>Hora Final</label>
-                        <input type="time" id="formHoraFinal">
-                    </div>
-                    <div>
-                        <label>Monto ($)</label>
-                        <input type="number" id="formMonto" placeholder="500">
-                    </div>
-                </div>
-                <div class="form-grid">
-                    <div>
-                        <label>Salón</label>
-                        <input type="text" id="formSalon" placeholder="Principal">
-                    </div>
-                    <div>
-                        <label>Vestimenta</label>
-                        <input type="text" id="formVestimenta" placeholder="Formal">
-                    </div>
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label>Notas</label>
-                    <textarea id="formNotas" placeholder="Notas..."></textarea>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <button onclick="guardarReserva()">💾 Guardar</button>
-                    <button onclick="cancelarFormulario()" style="background: #999;">✕ Cancelar</button>
-                </div>
-            </div>
 
             <h2>📋 Mis Reservas</h2>
             <table>
@@ -463,8 +421,58 @@
             </table>
         </div>
 
-        <!-- Todas las Reservas (Admin) -->
-        <div id="tabTodasReservas" class="tab-content">
+        <!-- Crear Reserva (Admin) -->
+        <div id="tabCrearReserva" class="tab-content">
+            <div class="form-container">
+                <h2>➕ Nueva Reserva</h2>
+                <div class="form-grid">
+                    <div>
+                        <label>Asignar a Proveedor</label>
+                        <select id="formProveedorSelect" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1em;">
+                            <option value="">-- Selecciona un proveedor --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Fecha</label>
+                        <input type="date" id="formFecha">
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div>
+                        <label>Hora Inicio</label>
+                        <input type="time" id="formHoraInicio">
+                    </div>
+                    <div>
+                        <label>Hora Final</label>
+                        <input type="time" id="formHoraFinal">
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div>
+                        <label>Salón</label>
+                        <input type="text" id="formSalon" placeholder="Principal">
+                    </div>
+                    <div>
+                        <label>Monto ($)</label>
+                        <input type="number" id="formMonto" placeholder="500">
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div>
+                        <label>Vestimenta</label>
+                        <input type="text" id="formVestimenta" placeholder="Formal">
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label>Notas</label>
+                    <textarea id="formNotas" placeholder="Notas..."></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button onclick="guardarReserva()">💾 Guardar</button>
+                    <button onclick="cancelarFormulario()" style="background: #999;">✕ Cancelar</button>
+                </div>
+            </div>
+
             <h2>📊 Todas las Reservas</h2>
             <table>
                 <thead>
@@ -474,11 +482,12 @@
                         <th>Horario</th>
                         <th>Salón</th>
                         <th>Monto</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tablaTodasReservasBody">
                     <tr>
-                        <td colspan="5" style="text-align: center;">Sin reservas</td>
+                        <td colspan="6" style="text-align: center;">Sin reservas</td>
                     </tr>
                 </tbody>
             </table>
