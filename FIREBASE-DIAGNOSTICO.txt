@@ -1,0 +1,174 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║            🔍 FIREBASE DIAGNOSTICO - VER QUÉ ESTÁ PASANDO 🔍             ║
+║                                                                            ║
+║                    Ejecuta esto en DevTools (F12)                         ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 PASOS PARA DIAGNOSTICAR
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PASO 1: Abre DevTools (F12)
+─────────────────────────
+
+1. Presiona: F12
+2. Se abre a la derecha
+3. Ve a la pestaña: Console
+4. Limpia la pantalla: Ctrl+L
+
+
+PASO 2: Copia y pega este código
+─────────────────────────────────
+
+Copia TODO esto (sin editar):
+
+console.log('═══════════════════════════════════════════');
+console.log('DIAGNÓSTICO DE FIREBASE');
+console.log('═══════════════════════════════════════════');
+
+console.log('\n1️⃣ ¿Firebase está disponible?');
+if (typeof firebase !== 'undefined') {
+    console.log('✅ Firebase CARGÓ');
+    console.log('Versión:', firebase.SDK_VERSION);
+} else {
+    console.error('❌ Firebase NO CARGÓ');
+}
+
+console.log('\n2️⃣ ¿Tenemos Firestore?');
+if (typeof firebase !== 'undefined' && typeof firebase.firestore !== 'undefined') {
+    console.log('✅ Firestore DISPONIBLE');
+} else {
+    console.error('❌ Firestore NO DISPONIBLE');
+}
+
+console.log('\n3️⃣ ¿Podemos inicializar?');
+try {
+    const db = firebase.firestore();
+    console.log('✅ Firestore inicializado');
+    console.log('ProjectId:', firebase.app().options.projectId);
+} catch (e) {
+    console.error('❌ Error:', e.message);
+}
+
+console.log('\n4️⃣ ¿Tenemos credenciales?');
+const config = firebase.app().options;
+console.log('apiKey:', config.apiKey ? '✅ Existe' : '❌ Falta');
+console.log('authDomain:', config.authDomain ? '✅ Existe' : '❌ Falta');
+console.log('projectId:', config.projectId ? '✅ Existe' : '❌ Falta');
+console.log('storageBucket:', config.storageBucket ? '✅ Existe' : '❌ Falta');
+console.log('messagingSenderId:', config.messagingSenderId ? '✅ Existe' : '❌ Falta');
+console.log('appId:', config.appId ? '✅ Existe' : '❌ Falta');
+
+console.log('\n5️⃣ Intentando leer Firestore:');
+const db = firebase.firestore();
+db.collection('proveedores').limit(1).get()
+    .then(snapshot => {
+        console.log('✅ Firestore responde');
+        console.log('Documentos encontrados:', snapshot.size);
+        if (snapshot.size > 0) {
+            console.log('Primer documento:', snapshot.docs[0].data());
+        } else {
+            console.log('⚠️ No hay documentos (normal si es nuevo)');
+        }
+    })
+    .catch(error => {
+        console.error('❌ Error leyendo Firestore:', error.code, error.message);
+        console.error('Detalles:', error);
+    });
+
+console.log('\n═══════════════════════════════════════════');
+console.log('FIN DIAGNÓSTICO');
+console.log('═══════════════════════════════════════════\n');
+
+
+PASO 3: ¿Qué verás?
+──────────────────
+
+✅ BIEN (Todo funciona):
+   ✅ Firebase CARGÓ
+   ✅ Firestore DISPONIBLE
+   ✅ Firestore inicializado
+   ✅ Todas las credenciales existen
+   ✅ Firestore responde
+   
+   → LA APP DEBERÍA FUNCIONAR
+
+
+❌ PROBLEMA 1: "Firebase NO CARGÓ"
+   └─ Los scripts de Firebase no se cargaron
+   └─ Solución: Ver FIREBASE-TROUBLESHOOTING-COMPLETO.md
+
+
+❌ PROBLEMA 2: "Firestore NO DISPONIBLE"
+   └─ Los scripts de Firestore no se cargaron
+   └─ Solución: Ver FIREBASE-TROUBLESHOOTING-COMPLETO.md
+
+
+❌ PROBLEMA 3: "Error leyendo Firestore: permission-denied"
+   └─ Las Firestore Rules no permiten lectura
+   └─ Solución:
+      1. Firebase Console
+      2. Firestore → Rules
+      3. Cambiar a: allow read, write: if true
+      4. Publicar
+
+
+❌ PROBLEMA 4: "Error leyendo Firestore: invalid-argument"
+   └─ Credenciales incorrectas
+   └─ Solución:
+      1. Firebase Console
+      2. Copiar credenciales NUEVAS
+      3. Reemplazar en HTML
+      4. Guardar (Ctrl+S)
+      5. Recargar (F5)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔧 SEGUNDO DIAGNÓSTICO: Verificar scripts HTML
+───────────────────────────────────────────────
+
+En la Console, ejecuta:
+
+// ¿Los scripts cargaron?
+console.log('Scripts en la página:');
+console.log('firebase-app.js:', document.scripts | document.querySelectorAll('script[src*="firebase-app"]').length > 0 ? '✅' : '❌');
+console.log('firebase-firestore.js:', document.querySelectorAll('script[src*="firestore"]').length > 0 ? '✅' : '❌');
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📞 RESULTADOS ESPERADOS
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Si ves esto = Problema resuelto:
+
+✅ Firebase CARGÓ
+✅ Firestore DISPONIBLE
+✅ Firestore inicializado
+✅ projectId: proveapp-35793
+✅ apiKey: Existe
+✅ authDomain: Existe
+✅ storageBucket: Existe
+✅ Firestore responde
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎯 PRÓXIMO PASO
+
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Ejecuta el diagnóstico
+2. Lee los resultados
+3. Si hay ❌ , busca la solución
+4. Si todo es ✅ , actualiza la página
+5. Intenta usar la app
+
+
+═══════════════════════════════════════════════════════════════════════════════
