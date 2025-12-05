@@ -84,7 +84,7 @@
             font-weight: 600;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
@@ -293,6 +293,53 @@
             color: white;
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 1em;
+        }
+
+        .modal-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
         @media (max-width: 768px) {
             .login-grid {
                 grid-template-columns: 1fr;
@@ -321,7 +368,6 @@
     <p style="color: #999; margin-bottom: 20px;">Gestión de Proveedores</p>
 
     <div class="login-grid">
-        <!-- Proveedor -->
         <div class="login-box">
             <h2>👤 Proveedor</h2>
             <div class="form-group">
@@ -331,16 +377,15 @@
             <button onclick="loginProveedor()">Acceder</button>
         </div>
 
-        <!-- Admin -->
         <div class="login-box">
             <h2>⚙️ Administrador</h2>
             <div class="form-group">
                 <label>Usuario</label>
-                <input type="text" id="adminUser" value="admin" placeholder="admin">
+                <input type="text" id="adminUser" value="admin">
             </div>
             <div class="form-group">
                 <label>Contraseña</label>
-                <input type="password" id="adminPass" value="admin123" placeholder="••••••">
+                <input type="password" id="adminPass" value="admin123">
             </div>
             <button onclick="loginAdmin()">Acceder</button>
         </div>
@@ -349,7 +394,6 @@
 
 <!-- APP -->
 <div id="appContainer" class="app-container">
-    <!-- Header -->
     <div class="header">
         <h1>📅 ProveApp</h1>
         <div>
@@ -358,15 +402,12 @@
         </div>
     </div>
 
-    <!-- Tabs -->
     <div class="tabs" id="tabsContainer"></div>
 
-    <!-- Content -->
     <div class="content">
-        <!-- Reservas Proveedor -->
+        <!-- PROVEEDOR: Mis Reservas -->
         <div id="tabReservas" class="tab-content active">
             <div class="stats-grid" id="statsContainer"></div>
-
             <h2>📋 Mis Reservas</h2>
             <table>
                 <thead>
@@ -379,14 +420,12 @@
                     </tr>
                 </thead>
                 <tbody id="tablaReservasBody">
-                    <tr>
-                        <td colspan="5" style="text-align: center; color: #999;">Cargando...</td>
-                    </tr>
+                    <tr><td colspan="5" style="text-align: center; color: #999;">Cargando...</td></tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- Proveedores (Admin) -->
+        <!-- ADMIN: Proveedores -->
         <div id="tabProveedores" class="tab-content">
             <div class="form-container">
                 <h2>➕ Crear Proveedor</h2>
@@ -400,7 +439,7 @@
                         <input type="email" id="adminEmailProveedor" placeholder="juan@email.com">
                     </div>
                 </div>
-                <button onclick="crearProveedor()" style="margin-top: 10px;">🔑 Generar Código</button>
+                <button onclick="crearProveedor()">🔑 Generar Código</button>
             </div>
 
             <h2>📋 Proveedores</h2>
@@ -414,21 +453,19 @@
                     </tr>
                 </thead>
                 <tbody id="tablaProveedoresBody">
-                    <tr>
-                        <td colspan="4" style="text-align: center;">Sin proveedores</td>
-                    </tr>
+                    <tr><td colspan="4" style="text-align: center;">Sin proveedores</td></tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- Crear Reserva (Admin) -->
+        <!-- ADMIN: Crear Reserva -->
         <div id="tabCrearReserva" class="tab-content">
             <div class="form-container">
                 <h2>➕ Nueva Reserva</h2>
                 <div class="form-grid">
                     <div>
                         <label>Asignar a Proveedor</label>
-                        <select id="formProveedorSelect" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1em;">
+                        <select id="formProveedorSelect">
                             <option value="">-- Selecciona un proveedor --</option>
                         </select>
                     </div>
@@ -458,7 +495,7 @@
                     </div>
                 </div>
                 <div class="form-grid">
-                    <div>
+                    <div style="grid-column: 1 / -1;">
                         <label>Vestimenta</label>
                         <input type="text" id="formVestimenta" placeholder="Formal">
                     </div>
@@ -469,7 +506,7 @@
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <button onclick="guardarReserva()">💾 Guardar</button>
-                    <button onclick="cancelarFormulario()" style="background: #999;">✕ Cancelar</button>
+                    <button onclick="limpiarFormulario()" style="background: #999;">✕ Limpiar</button>
                 </div>
             </div>
 
@@ -486,40 +523,31 @@
                     </tr>
                 </thead>
                 <tbody id="tablaTodasReservasBody">
-                    <tr>
-                        <td colspan="6" style="text-align: center;">Sin reservas</td>
-                    </tr>
+                    <tr><td colspan="6" style="text-align: center;">Sin reservas</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<!-- NOTIFICATION -->
+<!-- MODAL EDITAR MONTO -->
+<div id="modalEditarMonto" class="modal">
+    <div class="modal-content">
+        <h2>Editar Monto</h2>
+        <input type="number" id="nuevoMonto" placeholder="Nuevo monto" min="0">
+        <div class="modal-buttons">
+            <button onclick="guardarNuevoMonto()">💾 Guardar</button>
+            <button onclick="cerrarModal()" style="background: #999;">✕ Cancelar</button>
+        </div>
+    </div>
+</div>
+
 <div id="notification" class="notification"></div>
 
 <script type="module">
-    // ============================================
-    // IMPORTAR FIREBASE MÓDULOS ES
-    // ============================================
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { 
-        getFirestore, 
-        collection, 
-        addDoc, 
-        getDocs, 
-        updateDoc, 
-        doc, 
-        deleteDoc, 
-        onSnapshot, 
-        where, 
-        query,
-        limit 
-    } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-    // ============================================
-    // CONFIGURACIÓN FIREBASE
-    // ============================================
     const firebaseConfig = {
         apiKey: "AIzaSyAMB9h7cNxaSiTbrjYfbHaA58QDgqbAayM",
         authDomain: "proveapp-35793.firebaseapp.com",
@@ -529,76 +557,37 @@
         appId: "1:734706343214:web:c6acde37c1d491864a6ebf"
     };
 
-    // ============================================
-    // INICIALIZAR FIREBASE
-    // ============================================
-    console.log('🔥 Inicializando Firebase...');
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     console.log('✅ Firebase inicializado correctamente');
-    console.log('✅ Firestore cargó');
-    console.log('✅ Conexión a DB: ✅');
-    console.log('✅ Config projectId:', firebaseConfig.projectId);
 
-    // ============================================
-    // ESTADO GLOBAL
-    // ============================================
     let usuarioActual = null;
     let rolActual = null;
     let proveedorActual = null;
     let reservas = [];
     let proveedores = [];
+    let reservaEnEdicion = null;
 
-    // ============================================
-    // CARGAR DATOS DESDE FIREBASE (SIN ÍNDICES)
-    // ============================================
     async function cargarProveedores() {
-        try {
-            const snap = await getDocs(collection(db, 'proveedores'));
-            proveedores = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            console.log('✅ Proveedores cargados:', proveedores.length);
-        } catch (error) {
-            console.error('❌ Error cargando proveedores:', error);
-        }
+        const snap = await getDocs(collection(db, 'proveedores'));
+        proveedores = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     }
 
     async function cargarReservas() {
-        try {
-            // Cargar TODAS las reservas (sin where + orderBy que necesita índice)
-            const snap = await getDocs(collection(db, 'reservas'));
-            let todasReservas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            
-            // Filtrar y ordenar EN MEMORIA (no en Firestore)
-            if (proveedorActual) {
-                reservas = todasReservas
-                    .filter(r => r.codigoProveedor === proveedorActual)
-                    .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-            } else {
-                reservas = todasReservas;
-            }
-            
-            console.log('✅ Reservas cargadas:', reservas.length);
-            actualizarUI();
-        } catch (error) {
-            console.error('❌ Error cargando reservas:', error);
-            mostrarNotificacion('Error: ' + error.message, 'error');
+        const snap = await getDocs(collection(db, 'reservas'));
+        let todas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        
+        if (proveedorActual) {
+            reservas = todas.filter(r => r.codigoProveedor === proveedorActual);
+        } else {
+            reservas = todas;
         }
+        actualizarTablas();
     }
 
-    // Escuchar cambios en tiempo real
-    onSnapshot(collection(db, 'proveedores'), () => { 
-        cargarProveedores().then(() => { 
-            if (rolActual === 'admin') renderAdmin(); 
-        }); 
-    });
+    onSnapshot(collection(db, 'proveedores'), cargarProveedores);
+    onSnapshot(collection(db, 'reservas'), cargarReservas);
 
-    onSnapshot(collection(db, 'reservas'), () => { 
-        cargarReservas();
-    });
-
-    // ============================================
-    // UTILIDADES
-    // ============================================
     function generarCodigoProveedor() {
         const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         let codigo = 'PROV-';
@@ -615,43 +604,32 @@
         setTimeout(() => notif.classList.remove('show'), 3000);
     }
 
-    function loginProveedor() {
+    window.loginProveedor = async function() {
         const codigo = document.getElementById('proveedorCodigo').value.trim();
-        if (!codigo) {
-            mostrarNotificacion('Ingresa tu código', 'error');
-            return;
-        }
-
         const proveedor = proveedores.find(p => p.codigo === codigo);
         if (!proveedor) {
             mostrarNotificacion('❌ Código no encontrado', 'error');
             return;
         }
-
         usuarioActual = proveedor.nombre;
         proveedorActual = codigo;
         rolActual = 'proveedor';
         mostrarApp();
-        cargarReservas();
-        mostrarNotificacion('¡Bienvenido ' + usuarioActual + '!', 'success');
-    }
+    };
 
-    function loginAdmin() {
+    window.loginAdmin = function() {
         const user = document.getElementById('adminUser').value;
         const pass = document.getElementById('adminPass').value;
-
         if (user !== 'admin' || pass !== 'admin123') {
-            mostrarNotificacion('Credenciales incorrectas', 'error');
+            mostrarNotificacion('❌ Credenciales incorrectas', 'error');
             return;
         }
-
         usuarioActual = 'ADMIN';
         rolActual = 'admin';
         mostrarApp();
-        mostrarNotificacion('¡Bienvenido Admin!', 'success');
-    }
+    };
 
-    function logout() {
+    window.logout = function() {
         if (confirm('¿Cerrar sesión?')) {
             usuarioActual = null;
             rolActual = null;
@@ -659,7 +637,7 @@
             document.getElementById('appContainer').classList.remove('active');
             document.getElementById('loginContainer').style.display = 'block';
         }
-    }
+    };
 
     function mostrarApp() {
         document.getElementById('loginContainer').style.display = 'none';
@@ -671,16 +649,15 @@
 
         if (rolActual === 'proveedor') {
             tabsContainer.innerHTML = '<button class="tab-button active" onclick="cambiarTab(\'tabReservas\')">📋 Mis Reservas</button>';
-            document.getElementById('formContainer').style.display = 'block';
         } else {
             tabsContainer.innerHTML = `
-                <button class="tab-button active" onclick="cambiarTab('tabReservas')">📋 Reservas</button>
+                <button class="tab-button active" onclick="cambiarTab('tabReservas')">📊 Reservas</button>
                 <button class="tab-button" onclick="cambiarTab('tabProveedores')">👥 Proveedores</button>
-                <button class="tab-button" onclick="cambiarTab('tabTodasReservas')">📊 Todas</button>
+                <button class="tab-button" onclick="cambiarTab('tabCrearReserva')">➕ Crear Reserva</button>
             `;
-            document.getElementById('formContainer').style.display = 'none';
-            renderAdmin();
+            llenarDropdownProveedores();
         }
+        cargarReservas();
     }
 
     window.cambiarTab = function(tabId) {
@@ -690,126 +667,86 @@
         event.target.classList.add('active');
     };
 
-    function actualizarUI() {
-        const total = reservas.length;
-        const confirmadas = reservas.filter(r => r.estado === 'confirmada').length;
-        const ingresos = reservas.filter(r => r.estado === 'confirmada').reduce((s, r) => s + (parseFloat(r.monto) || 0), 0);
-
-        document.getElementById('statsContainer').innerHTML = `
-            <div class="stat-card">
-                <h3>📊 Total</h3>
-                <div class="value">${total}</div>
-            </div>
-            <div class="stat-card">
-                <h3>✅ Confirmadas</h3>
-                <div class="value">${confirmadas}</div>
-            </div>
-            <div class="stat-card">
-                <h3>❌ Canceladas</h3>
-                <div class="value">${total - confirmadas}</div>
-            </div>
-            <div class="stat-card">
-                <h3>💰 Ingresos</h3>
-                <div class="value">$${ingresos.toFixed(0)}</div>
-            </div>
-        `;
+    function actualizarTablas() {
+        const stats = document.getElementById('statsContainer');
+        if (stats) {
+            const total = reservas.length;
+            const confirmadas = reservas.filter(r => r.estado === 'confirmada').length;
+            const ingresos = reservas.reduce((s, r) => s + (parseFloat(r.monto) || 0), 0);
+            stats.innerHTML = `
+                <div class="stat-card"><h3>📊 Total</h3><div class="value">${total}</div></div>
+                <div class="stat-card"><h3>✅ Confirmadas</h3><div class="value">${confirmadas}</div></div>
+                <div class="stat-card"><h3>❌ Canceladas</h3><div class="value">${total - confirmadas}</div></div>
+                <div class="stat-card"><h3>💰 Ingresos</h3><div class="value">$${ingresos.toFixed(0)}</div></div>
+            `;
+        }
 
         const tbody = document.getElementById('tablaReservasBody');
-        if (reservas.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999;">No hay reservas</td></tr>';
-            return;
+        if (tbody) {
+            if (reservas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Sin reservas</td></tr>';
+            } else {
+                tbody.innerHTML = reservas.map(r => `
+                    <tr>
+                        <td>${r.fecha}</td>
+                        <td>${r.horaInicio} - ${r.horaFinal}</td>
+                        <td>${r.salon}</td>
+                        <td>$${parseFloat(r.monto).toFixed(0)}</td>
+                        <td>
+                            ${rolActual === 'proveedor' ? `<button class="btn-small" onclick="mostrarEditarMonto('${r.id}', ${r.monto})">✏️ Editar</button>` : ''}
+                            ${rolActual === 'admin' ? `<button class="btn-small btn-delete" onclick="eliminarReserva('${r.id}')">🗑️</button>` : ''}
+                        </td>
+                    </tr>
+                `).join('');
+            }
         }
 
-        tbody.innerHTML = reservas.map((r, idx) => `
-            <tr>
-                <td>${r.fecha}</td>
-                <td>${r.horaInicio} - ${r.horaFinal}</td>
-                <td>${r.salon}</td>
-                <td>$${parseFloat(r.monto).toFixed(0)}</td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="btn-small" onclick="editarReserva(${idx})">✏️</button>
-                        <button class="btn-small btn-delete" onclick="eliminarReserva('${r.id}')">🗑️</button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
+        const tbody2 = document.getElementById('tablaProveedoresBody');
+        if (tbody2) {
+            if (proveedores.length === 0) {
+                tbody2.innerHTML = '<tr><td colspan="4">Sin proveedores</td></tr>';
+            } else {
+                tbody2.innerHTML = proveedores.map(p => `
+                    <tr>
+                        <td>${p.nombre}</td>
+                        <td><strong>${p.codigo}</strong></td>
+                        <td>${reservas.filter(r => r.codigoProveedor === p.codigo).length}</td>
+                        <td><button class="btn-small btn-delete" onclick="eliminarProveedor('${p.id}')">🗑️</button></td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        const tbody3 = document.getElementById('tablaTodasReservasBody');
+        if (tbody3) {
+            if (reservas.length === 0) {
+                tbody3.innerHTML = '<tr><td colspan="6">Sin reservas</td></tr>';
+            } else {
+                tbody3.innerHTML = reservas.map(r => `
+                    <tr>
+                        <td>${r.nombreProveedor}</td>
+                        <td>${r.fecha}</td>
+                        <td>${r.horaInicio} - ${r.horaFinal}</td>
+                        <td>${r.salon}</td>
+                        <td>$${parseFloat(r.monto).toFixed(0)}</td>
+                        <td><button class="btn-small btn-delete" onclick="eliminarReserva('${r.id}')">🗑️</button></td>
+                    </tr>
+                `).join('');
+            }
+        }
     }
 
-    window.guardarReserva = async function() {
-        const fecha = document.getElementById('formFecha').value;
-        const horaInicio = document.getElementById('formHoraInicio').value;
-        const horaFinal = document.getElementById('formHoraFinal').value;
-        const salon = document.getElementById('formSalon').value;
-        const vestimenta = document.getElementById('formVestimenta').value;
-        const monto = document.getElementById('formMonto').value;
-        const notas = document.getElementById('formNotas').value;
-
-        if (!fecha || !horaInicio || !horaFinal || !salon || !monto) {
-            mostrarNotificacion('Completa todos los campos', 'error');
-            return;
-        }
-
-        try {
-            await addDoc(collection(db, 'reservas'), {
-                codigoProveedor: proveedorActual,
-                nombreProveedor: usuarioActual,
-                fecha,
-                horaInicio,
-                horaFinal,
-                salon,
-                vestimenta,
-                monto,
-                notas,
-                estado: 'confirmada',
-                createdAt: new Date()
-            });
-
-            mostrarNotificacion('✅ Reserva guardada', 'success');
-            limpiarFormulario();
-            cargarReservas();
-        } catch (error) {
-            mostrarNotificacion('Error: ' + error.message, 'error');
-        }
-    };
-
-    window.eliminarReserva = async function(id) {
-        if (!confirm('¿Eliminar reserva?')) return;
-        
-        try {
-            await deleteDoc(doc(db, 'reservas', id));
-            mostrarNotificacion('✅ Eliminada', 'success');
-            cargarReservas();
-        } catch (error) {
-            mostrarNotificacion('Error: ' + error.message, 'error');
-        }
-    };
-
-    window.editarReserva = function(index) {
-        const r = reservas[index];
-        document.getElementById('formFecha').value = r.fecha;
-        document.getElementById('formHoraInicio').value = r.horaInicio;
-        document.getElementById('formHoraFinal').value = r.horaFinal;
-        document.getElementById('formSalon').value = r.salon;
-        document.getElementById('formVestimenta').value = r.vestimenta;
-        document.getElementById('formMonto').value = r.monto;
-        document.getElementById('formNotas').value = r.notas;
-        document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
-    };
-
-    window.limpiarFormulario = function() {
-        document.getElementById('formFecha').value = '';
-        document.getElementById('formHoraInicio').value = '';
-        document.getElementById('formHoraFinal').value = '';
-        document.getElementById('formSalon').value = '';
-        document.getElementById('formVestimenta').value = '';
-        document.getElementById('formMonto').value = '';
-        document.getElementById('formNotas').value = '';
-    };
-
-    window.cancelarFormulario = function() {
-        limpiarFormulario();
-    };
+    function llenarDropdownProveedores() {
+        const select = document.getElementById('formProveedorSelect');
+        if (!select) return;
+        select.innerHTML = '<option value="">-- Selecciona un proveedor --</option>';
+        proveedores.forEach(p => {
+            const option = document.createElement('option');
+            option.value = p.id;
+            option.textContent = `${p.nombre} (${p.codigo})`;
+            select.appendChild(option);
+        });
+    }
 
     window.crearProveedor = async function() {
         const nombre = document.getElementById('adminNombreProveedor').value.trim();
@@ -817,91 +754,101 @@
             mostrarNotificacion('Ingresa nombre', 'error');
             return;
         }
-
         const codigo = generarCodigoProveedor();
-        
-        try {
-            await addDoc(collection(db, 'proveedores'), {
-                nombre,
-                codigo,
-                email: document.getElementById('adminEmailProveedor').value,
-                descripcion: '',
-                fechaCreacion: new Date()
-            });
-
-            mostrarNotificacion(`✅ Proveedor creado: ${codigo}`, 'success');
-            document.getElementById('adminNombreProveedor').value = '';
-            document.getElementById('adminEmailProveedor').value = '';
-        } catch (error) {
-            mostrarNotificacion('Error: ' + error.message, 'error');
-        }
+        await addDoc(collection(db, 'proveedores'), {
+            nombre,
+            codigo,
+            email: document.getElementById('adminEmailProveedor').value,
+            fechaCreacion: new Date()
+        });
+        mostrarNotificacion(`✅ Código: ${codigo}`, 'success');
+        document.getElementById('adminNombreProveedor').value = '';
+        document.getElementById('adminEmailProveedor').value = '';
     };
 
-    function renderAdmin() {
-        actualizarTablaProveedores();
-        actualizarTablaTodasReservas();
-    }
+    window.guardarReserva = async function() {
+        const proveedorId = document.getElementById('formProveedorSelect').value;
+        if (!proveedorId) {
+            mostrarNotificacion('Selecciona un proveedor', 'error');
+            return;
+        }
+        const fecha = document.getElementById('formFecha').value;
+        const horaInicio = document.getElementById('formHoraInicio').value;
+        const horaFinal = document.getElementById('formHoraFinal').value;
+        const salon = document.getElementById('formSalon').value;
+        const monto = document.getElementById('formMonto').value;
 
-    function actualizarTablaProveedores() {
-        const tbody = document.getElementById('tablaProveedoresBody');
-        if (!tbody) return;
-
-        if (proveedores.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Sin proveedores</td></tr>';
+        if (!fecha || !horaInicio || !horaFinal || !salon || !monto) {
+            mostrarNotificacion('Completa todos los campos', 'error');
             return;
         }
 
-        tbody.innerHTML = proveedores.map(p => `
-            <tr>
-                <td>${p.nombre}</td>
-                <td><strong>${p.codigo}</strong></td>
-                <td>${reservas.filter(r => r.codigoProveedor === p.codigo).length}</td>
-                <td>
-                    <button class="btn-small btn-delete" onclick="eliminarProveedor('${p.id}')">🗑️</button>
-                </td>
-            </tr>
-        `).join('');
-    }
+        const proveedor = proveedores.find(p => p.id === proveedorId);
+        await addDoc(collection(db, 'reservas'), {
+            codigoProveedor: proveedor.codigo,
+            nombreProveedor: proveedor.nombre,
+            fecha,
+            horaInicio,
+            horaFinal,
+            salon,
+            vestimenta: document.getElementById('formVestimenta').value,
+            monto,
+            notas: document.getElementById('formNotas').value,
+            estado: 'confirmada',
+            createdAt: new Date()
+        });
+        mostrarNotificacion('✅ Reserva guardada', 'success');
+        window.limpiarFormulario();
+    };
 
-    function actualizarTablaTodasReservas() {
-        const tbody = document.getElementById('tablaTodasReservasBody');
-        if (!tbody) return;
+    window.limpiarFormulario = function() {
+        document.getElementById('formProveedorSelect').value = '';
+        document.getElementById('formFecha').value = '';
+        document.getElementById('formHoraInicio').value = '';
+        document.getElementById('formHoraFinal').value = '';
+        document.getElementById('formSalon').value = '';
+        document.getElementById('formMonto').value = '';
+        document.getElementById('formVestimenta').value = '';
+        document.getElementById('formNotas').value = '';
+    };
 
-        if (reservas.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Sin reservas</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = reservas.map(r => `
-            <tr>
-                <td>${r.nombreProveedor}</td>
-                <td>${r.fecha}</td>
-                <td>${r.horaInicio} - ${r.horaFinal}</td>
-                <td>${r.salon}</td>
-                <td>$${parseFloat(r.monto).toFixed(0)}</td>
-            </tr>
-        `).join('');
-    }
+    window.eliminarReserva = async function(id) {
+        if (!confirm('¿Eliminar?')) return;
+        await deleteDoc(doc(db, 'reservas', id));
+        mostrarNotificacion('✅ Eliminada', 'success');
+    };
 
     window.eliminarProveedor = async function(id) {
-        if (!confirm('¿Eliminar proveedor?')) return;
-        
-        try {
-            await deleteDoc(doc(db, 'proveedores', id));
-            mostrarNotificacion('✅ Eliminado', 'success');
-        } catch (error) {
-            mostrarNotificacion('Error: ' + error.message, 'error');
-        }
+        if (!confirm('¿Eliminar?')) return;
+        await deleteDoc(doc(db, 'proveedores', id));
+        mostrarNotificacion('✅ Eliminado', 'success');
     };
 
-    window.loginProveedor = loginProveedor;
-    window.loginAdmin = loginAdmin;
-    window.logout = logout;
+    window.mostrarEditarMonto = function(id, monto) {
+        reservaEnEdicion = id;
+        document.getElementById('nuevoMonto').value = monto;
+        document.getElementById('modalEditarMonto').classList.add('show');
+    };
 
-    // ============================================
-    // INICIAR
-    // ============================================
-    console.log('✅ ProveApp cargada - Firebase conectado ✅');
+    window.guardarNuevoMonto = async function() {
+        const nuevoMonto = document.getElementById('nuevoMonto').value;
+        if (!nuevoMonto) {
+            mostrarNotificacion('Ingresa el monto', 'error');
+            return;
+        }
+        await updateDoc(doc(db, 'reservas', reservaEnEdicion), { monto: nuevoMonto });
+        cerrarModal();
+        mostrarNotificacion('✅ Monto actualizado', 'success');
+    };
+
+    window.cerrarModal = function() {
+        document.getElementById('modalEditarMonto').classList.remove('show');
+    };
+
+    window.loginProveedor = window.loginProveedor;
+    window.loginAdmin = window.loginAdmin;
+    window.logout = window.logout;
+
     cargarProveedores();
 </script>
 
