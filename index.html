@@ -4,536 +4,897 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProveApp - Gestión de Proveedores</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .login-container h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-bottom: 15px;
+        }
+
+        .login-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .login-box {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .login-box h2 {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .app-container {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            flex-direction: column;
+            min-height: 80vh;
+            max-height: 90vh;
+        }
+
+        .app-container.active {
+            display: flex;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            background: white;
+            padding: 0 20px;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 15px 20px;
+            color: #999;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .content {
+            padding: 25px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 0.85em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .form-container {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            min-height: 80px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background: #f0f0f0;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 0.85em;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-delete {
+            background: #dc3545 !important;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 10px;
+            right: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        .notification.success {
+            background: #28a745;
+            color: white;
+        }
+
+        .notification.error {
+            background: #dc3545;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .login-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.85em;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="app"></div>
-    
-    <script type="module">
-        // ============================================
-        // IMPORTAR FIREBASE MÓDULOS ES
-        // ============================================
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { 
-            getFirestore, 
-            collection, 
-            addDoc, 
-            getDocs, 
-            updateDoc, 
-            doc, 
-            deleteDoc, 
-            onSnapshot, 
-            where, 
-            query, 
-            orderBy, 
-            limit 
-        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // ============================================
-        // CONFIGURACIÓN FIREBASE
-        // ============================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyAMB9h7cNxaSiTbrjYfbHaA58QDgqbAayM",
-            authDomain: "proveapp-35793.firebaseapp.com",
-            projectId: "proveapp-35793",
-            storageBucket: "proveapp-35793.firebasestorage.app",
-            messagingSenderId: "734706343214",
-            appId: "1:734706343214:web:c6acde37c1d491864a6ebf"
-        };
+<!-- LOGIN -->
+<div id="loginContainer" class="login-container">
+    <h1>🔥 ProveApp</h1>
+    <span class="badge">✅ Firebase Conectado</span>
+    <p style="color: #999; margin-bottom: 20px;">Gestión de Proveedores</p>
 
-        // ============================================
-        // INICIALIZAR FIREBASE
-        // ============================================
-        console.log('🔥 Inicializando Firebase...');
-        try {
-            const app = initializeApp(firebaseConfig);
-            const db = getFirestore(app);
-            console.log('✅ Firebase inicializado correctamente');
-            console.log('✅ Firestore cargó');
-            console.log('✅ Conexión a DB: ✅');
-            console.log('✅ Config projectId:', firebaseConfig.projectId);
+    <div class="login-grid">
+        <!-- Proveedor -->
+        <div class="login-box">
+            <h2>👤 Proveedor</h2>
+            <div class="form-group">
+                <label>Tu Código</label>
+                <input type="text" id="proveedorCodigo" placeholder="Ej: PROV-ABC123">
+            </div>
+            <button onclick="loginProveedor()">Acceder</button>
+        </div>
 
-            // ============================================
-            // ESTADO GLOBAL
-            // ============================================
-            let usuarioActual = null;
-            let rolActual = null;
-            let proveedorActual = null;
-            let reservas = [];
-            let proveedores = [];
+        <!-- Admin -->
+        <div class="login-box">
+            <h2>⚙️ Administrador</h2>
+            <div class="form-group">
+                <label>Usuario</label>
+                <input type="text" id="adminUser" value="admin" placeholder="admin">
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="adminPass" value="admin123" placeholder="••••••">
+            </div>
+            <button onclick="loginAdmin()">Acceder</button>
+        </div>
+    </div>
+</div>
 
-            // ============================================
-            // CARGAR DATOS DESDE FIREBASE
-            // ============================================
-            async function cargarProveedores() {
-                try {
-                    const snap = await getDocs(collection(db, 'proveedores'));
-                    proveedores = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                    console.log('✅ Proveedores cargados:', proveedores.length);
-                } catch (error) {
-                    console.error('❌ Error cargando proveedores:', error);
-                }
-            }
+<!-- APP -->
+<div id="appContainer" class="app-container">
+    <!-- Header -->
+    <div class="header">
+        <h1>📅 ProveApp</h1>
+        <div>
+            <span style="margin-right: 15px;">Usuario: <strong id="usuarioNombre">—</strong></span>
+            <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+        </div>
+    </div>
 
-            async function cargarReservasProveedor() {
-                if (!proveedorActual) {
-                    reservas = [];
-                    actualizarUI();
-                    return;
-                }
+    <!-- Tabs -->
+    <div class="tabs" id="tabsContainer"></div>
 
-                try {
-                    const q = query(
-                        collection(db, 'reservas'),
-                        where('codigoProveedor', '==', proveedorActual),
-                        orderBy('fecha', 'desc')
-                    );
-                    const snap = await getDocs(q);
-                    reservas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                    console.log('✅ Reservas cargadas:', reservas.length);
-                    actualizarUI();
-                } catch (error) {
-                    console.error('❌ Error cargando reservas:', error);
-                    mostrarNotificacion('Error: ' + error.message, 'error');
-                }
-            }
+    <!-- Content -->
+    <div class="content">
+        <!-- Reservas -->
+        <div id="tabReservas" class="tab-content active">
+            <div class="stats-grid" id="statsContainer"></div>
 
-            // Escuchar cambios en tiempo real
-            onSnapshot(collection(db, 'proveedores'), () => { 
-                cargarProveedores().then(() => { 
-                    if (rolActual === 'admin') renderAdmin(); 
-                }); 
-            });
-
-            onSnapshot(collection(db, 'reservas'), () => { 
-                if (rolActual === 'proveedor') cargarReservasProveedor();
-            });
-
-            // ============================================
-            // UTILIDADES
-            // ============================================
-            function generarCodigoProveedor() {
-                const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                let codigo = 'PROV-';
-                for (let i = 0; i < 6; i++) {
-                    codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-                }
-                return codigo;
-            }
-
-            function mostrarNotificacion(msg, tipo) {
-                const color = tipo === 'success' ? '#10b981' : '#ef4444';
-                console.log((tipo === 'success' ? '✅' : '❌'), msg);
-                alert(msg);
-            }
-
-            // ============================================
-            // RENDER LOGIN
-            // ============================================
-            function renderLogin() {
-                document.getElementById('app').innerHTML = `
-                    <div class="min-h-screen bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center p-4">
-                        <div class="w-full max-w-md">
-                            <div class="bg-white rounded-2xl shadow-2xl p-8">
-                                <div class="text-center mb-8">
-                                    <h1 class="text-4xl font-black mb-2">🔥 ProveApp</h1>
-                                    <p class="text-gray-600">Gestión de Proveedores con Firebase ✅</p>
-                                </div>
-                                
-                                <div class="space-y-4 mb-6">
-                                    <div>
-                                        <label class="block text-sm font-semibold mb-2">👤 Usuario Admin:</label>
-                                        <input type="text" id="usuario" value="admin" placeholder="admin" class="w-full p-3 border-2 rounded-lg font-semibold">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-semibold mb-2">🔐 Contraseña:</label>
-                                        <input type="password" id="password" value="admin123" placeholder="admin123" class="w-full p-3 border-2 rounded-lg font-semibold">
-                                    </div>
-                                    <button onclick="doLogin()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors">
-                                        ⚙️ Acceder como Admin
-                                    </button>
-                                </div>
-
-                                <div class="border-t pt-6">
-                                    <p class="text-sm font-semibold text-gray-600 mb-3">📱 O ingresa código de proveedor:</p>
-                                    <div class="flex gap-2">
-                                        <input type="text" id="codigoProveedor" placeholder="PROV-ABC123" class="flex-1 p-3 border-2 rounded-lg font-mono font-bold">
-                                        <button onclick="loginProveedor()" class="bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700">
-                                            ✓ Acceder
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="text-center mt-6 text-white text-sm">
-                                <p>Firebase Status: <strong>✅ CONECTADO</strong></p>
-                            </div>
-                        </div>
+            <div class="form-container" id="formContainer" style="display: none;">
+                <h2>➕ Nueva Reserva</h2>
+                <div class="form-grid">
+                    <div>
+                        <label>Fecha</label>
+                        <input type="date" id="formFecha">
                     </div>
-                `;
-            }
-
-            // ============================================
-            // LOGIN FUNCIONES
-            // ============================================
-            window.doLogin = function() {
-                const usuario = document.getElementById('usuario').value;
-                const password = document.getElementById('password').value;
-
-                if (usuario === 'admin' && password === 'admin123') {
-                    usuarioActual = 'ADMIN';
-                    rolActual = 'admin';
-                    cargarProveedores().then(() => renderAdmin());
-                } else {
-                    mostrarNotificacion('❌ Credenciales incorrectas', 'error');
-                }
-            };
-
-            window.loginProveedor = async function() {
-                const codigo = document.getElementById('codigoProveedor').value.trim();
-                if (!codigo) {
-                    mostrarNotificacion('⚠️ Ingresa tu código', 'error');
-                    return;
-                }
-
-                try {
-                    const q = query(collection(db, 'proveedores'), where('codigo', '==', codigo), limit(1));
-                    const snap = await getDocs(q);
-                    
-                    if (snap.empty) {
-                        mostrarNotificacion('❌ Código no encontrado', 'error');
-                        return;
-                    }
-
-                    const proveedor = snap.docs[0].data();
-                    usuarioActual = proveedor.nombre;
-                    proveedorActual = codigo;
-                    rolActual = 'proveedor';
-                    
-                    await cargarReservasProveedor();
-                    renderEmployee();
-                } catch (error) {
-                    mostrarNotificacion('❌ Error: ' + error.message, 'error');
-                }
-            };
-
-            window.logout = function() {
-                if (confirm('¿Cerrar sesión?')) {
-                    usuarioActual = null;
-                    rolActual = null;
-                    proveedorActual = null;
-                    renderLogin();
-                }
-            };
-
-            // ============================================
-            // RENDER EMPLOYEE
-            // ============================================
-            function renderEmployee() {
-                document.getElementById('app').innerHTML = `
-                    <div class="min-h-screen bg-gray-100">
-                        <div class="bg-blue-600 text-white p-4">
-                            <div class="container mx-auto flex justify-between items-center">
-                                <h1 class="text-2xl font-bold">📅 ProveApp</h1>
-                                <button onclick="logout()" class="px-4 py-2 rounded hover:bg-blue-700 font-semibold">🚪 Salir</button>
-                            </div>
-                        </div>
-                        <div class="container mx-auto p-4">
-                            <div class="bg-white rounded-lg shadow p-6">
-                                <div class="bg-blue-50 p-4 rounded-lg mb-6 border-2 border-blue-200">
-                                    <p class="text-lg"><strong>👋 Bienvenido:</strong> ${usuarioActual}</p>
-                                    <p class="text-sm text-gray-600 mt-2">Código: <code class="bg-white px-2 py-1 rounded font-bold">${proveedorActual}</code></p>
-                                </div>
-
-                                <div class="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border-2 border-green-200">
-                                    <h3 class="font-bold mb-3 text-lg">➕ Nueva Reserva</h3>
-                                    <div class="grid grid-cols-2 gap-3 mb-3">
-                                        <div>
-                                            <label class="text-sm font-semibold">Fecha:</label>
-                                            <input type="date" id="formFecha" class="w-full p-2 border-2 rounded">
-                                        </div>
-                                        <div>
-                                            <label class="text-sm font-semibold">Hora:</label>
-                                            <input type="time" id="formHora" class="w-full p-2 border-2 rounded">
-                                        </div>
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-3 mb-3">
-                                        <div>
-                                            <label class="text-sm font-semibold">Salón:</label>
-                                            <input type="text" id="formSalon" placeholder="Principal" class="w-full p-2 border-2 rounded">
-                                        </div>
-                                        <div>
-                                            <label class="text-sm font-semibold">Monto ($):</label>
-                                            <input type="number" id="formMonto" placeholder="500" class="w-full p-2 border-2 rounded">
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="text-sm font-semibold">Notas:</label>
-                                        <textarea id="formNotas" placeholder="Detalles adicionales..." class="w-full p-2 border-2 rounded mb-3"></textarea>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <button onclick="guardarReserva()" class="flex-1 bg-green-600 text-white py-2 rounded font-bold hover:bg-green-700">💾 Guardar</button>
-                                        <button onclick="limpiarForm()" class="flex-1 bg-gray-400 text-white py-2 rounded font-bold hover:bg-gray-500">✕ Limpiar</button>
-                                    </div>
-                                </div>
-
-                                <h3 class="font-bold mb-3 text-lg">📋 Mis Reservas</h3>
-                                <div id="reservasTable"></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                actualizarUI();
-            }
-
-            function actualizarUI() {
-                const tbody = document.getElementById('reservasTable');
-                if (!tbody) return;
-
-                if (reservas.length === 0) {
-                    tbody.innerHTML = '<div class="text-center py-8 text-gray-500">📭 Sin reservas creadas</div>';
-                    return;
-                }
-
-                let html = `
-                    <div class="border-2 rounded-lg overflow-hidden">
-                        <table class="w-full">
-                            <thead class="bg-gray-100">
-                                <tr>
-                                    <th class="p-3 text-left font-bold">Fecha</th>
-                                    <th class="p-3 text-left font-bold">Hora</th>
-                                    <th class="p-3 text-left font-bold">Salón</th>
-                                    <th class="p-3 text-left font-bold">Monto</th>
-                                    <th class="p-3 text-left font-bold">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
-
-                reservas.forEach((r, idx) => {
-                    html += `
-                        <tr class="border-t hover:bg-gray-50">
-                            <td class="p-3">${r.fecha || 'N/A'}</td>
-                            <td class="p-3">${r.hora || 'N/A'}</td>
-                            <td class="p-3">${r.salon || 'N/A'}</td>
-                            <td class="p-3 font-semibold">$${r.monto || 0}</td>
-                            <td class="p-3">
-                                <button onclick="eliminarReserva('${r.id}')" class="text-red-600 hover:text-red-800 font-bold text-xl">🗑️</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-
-                html += `</tbody></table></div>`;
-                tbody.innerHTML = html;
-            }
-
-            window.guardarReserva = async function() {
-                const fecha = document.getElementById('formFecha').value;
-                const hora = document.getElementById('formHora').value;
-                const salon = document.getElementById('formSalon').value;
-                const monto = document.getElementById('formMonto').value;
-                const notas = document.getElementById('formNotas').value;
-
-                if (!fecha || !hora || !salon || !monto) {
-                    mostrarNotificacion('⚠️ Completa todos los campos', 'error');
-                    return;
-                }
-
-                try {
-                    await addDoc(collection(db, 'reservas'), {
-                        codigoProveedor: proveedorActual,
-                        nombreProveedor: usuarioActual,
-                        fecha,
-                        hora,
-                        salon,
-                        monto,
-                        notas,
-                        estado: 'confirmada',
-                        createdAt: new Date()
-                    });
-                    mostrarNotificacion('✅ Reserva guardada en Firebase', 'success');
-                    limpiarForm();
-                    await cargarReservasProveedor();
-                } catch (error) {
-                    mostrarNotificacion('❌ Error: ' + error.message, 'error');
-                }
-            };
-
-            window.eliminarReserva = async function(id) {
-                if (confirm('¿Eliminar esta reserva?')) {
-                    try {
-                        await deleteDoc(doc(db, 'reservas', id));
-                        mostrarNotificacion('✅ Reserva eliminada', 'success');
-                        await cargarReservasProveedor();
-                    } catch (error) {
-                        mostrarNotificacion('❌ Error: ' + error.message, 'error');
-                    }
-                }
-            };
-
-            window.limpiarForm = function() {
-                document.getElementById('formFecha').value = '';
-                document.getElementById('formHora').value = '';
-                document.getElementById('formSalon').value = '';
-                document.getElementById('formMonto').value = '';
-                document.getElementById('formNotas').value = '';
-            };
-
-            // ============================================
-            // RENDER ADMIN
-            // ============================================
-            function renderAdmin() {
-                document.getElementById('app').innerHTML = `
-                    <div class="min-h-screen bg-gray-100">
-                        <div class="bg-blue-600 text-white p-4">
-                            <div class="container mx-auto flex justify-between items-center">
-                                <h1 class="text-2xl font-bold">⚙️ Panel Admin</h1>
-                                <button onclick="logout()" class="px-4 py-2 rounded hover:bg-blue-700 font-semibold">🚪 Salir</button>
-                            </div>
-                        </div>
-                        <div class="container mx-auto p-4">
-                            <div class="bg-white rounded-lg shadow p-6">
-                                <div class="grid grid-cols-3 gap-4 mb-6">
-                                    <div class="bg-blue-100 p-4 rounded-lg border-2 border-blue-300">
-                                        <p class="text-sm font-semibold text-gray-600">Proveedores</p>
-                                        <p class="text-4xl font-black text-blue-600">${proveedores.length}</p>
-                                    </div>
-                                    <div class="bg-purple-100 p-4 rounded-lg border-2 border-purple-300">
-                                        <p class="text-sm font-semibold text-gray-600">Reservas</p>
-                                        <p class="text-4xl font-black text-purple-600">${reservas.length}</p>
-                                    </div>
-                                    <div class="bg-green-100 p-4 rounded-lg border-2 border-green-300">
-                                        <p class="text-sm font-semibold text-gray-600">Ingresos</p>
-                                        <p class="text-3xl font-black text-green-600">$${reservas.reduce((s, r) => s + (parseFloat(r.monto) || 0), 0).toFixed(0)}</p>
-                                    </div>
-                                </div>
-
-                                <div class="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200">
-                                    <h3 class="font-bold mb-3 text-lg">➕ Crear Proveedor</h3>
-                                    <div class="grid grid-cols-3 gap-3">
-                                        <input type="text" id="provNombre" placeholder="Nombre" class="p-3 border-2 rounded-lg font-semibold">
-                                        <input type="email" id="provEmail" placeholder="Email" class="p-3 border-2 rounded-lg font-semibold">
-                                        <button onclick="crearProveedor()" class="bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700">✓ Crear</button>
-                                    </div>
-                                </div>
-
-                                <h3 class="font-bold mb-3 text-lg">👥 Proveedores Registrados</h3>
-                                <div id="proveedoresTable"></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                actualizarTablaProveedores();
-            }
-
-            window.crearProveedor = async function() {
-                const nombre = document.getElementById('provNombre').value.trim();
-                const email = document.getElementById('provEmail').value.trim();
-
-                if (!nombre || !email) {
-                    mostrarNotificacion('⚠️ Completa todos los campos', 'error');
-                    return;
-                }
-
-                try {
-                    const codigo = generarCodigoProveedor();
-                    await addDoc(collection(db, 'proveedores'), {
-                        nombre,
-                        email,
-                        codigo,
-                        descripcion: '',
-                        fechaCreacion: new Date()
-                    });
-                    mostrarNotificacion(`✅ Proveedor creado\n\nCódigo: ${codigo}`, 'success');
-                    document.getElementById('provNombre').value = '';
-                    document.getElementById('provEmail').value = '';
-                } catch (error) {
-                    mostrarNotificacion('❌ Error: ' + error.message, 'error');
-                }
-            };
-
-            function actualizarTablaProveedores() {
-                const tbody = document.getElementById('proveedoresTable');
-                if (!tbody) return;
-
-                let html = `
-                    <div class="border-2 rounded-lg overflow-hidden">
-                        <table class="w-full">
-                            <thead class="bg-gray-100">
-                                <tr>
-                                    <th class="p-3 text-left font-bold">Nombre</th>
-                                    <th class="p-3 text-left font-bold">Código</th>
-                                    <th class="p-3 text-left font-bold">Email</th>
-                                    <th class="p-3 text-left font-bold">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
-
-                if (proveedores.length === 0) {
-                    html += '<tr><td colspan="4" class="p-4 text-center text-gray-500 font-semibold">📭 Sin proveedores</td></tr>';
-                } else {
-                    proveedores.forEach(p => {
-                        html += `
-                            <tr class="border-t hover:bg-gray-50">
-                                <td class="p-3 font-semibold">${p.nombre}</td>
-                                <td class="p-3"><code class="bg-yellow-100 px-3 py-1 rounded font-mono font-bold text-yellow-800">${p.codigo}</code></td>
-                                <td class="p-3 text-sm text-gray-600">${p.email}</td>
-                                <td class="p-3">
-                                    <button onclick="eliminarProveedor('${p.id}')" class="text-red-600 hover:text-red-800 font-bold text-xl">🗑️</button>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                }
-
-                html += '</tbody></table></div>';
-                tbody.innerHTML = html;
-            }
-
-            window.eliminarProveedor = async function(id) {
-                if (confirm('¿Eliminar este proveedor y todas sus reservas?')) {
-                    try {
-                        // Eliminar reservas del proveedor
-                        const prov = proveedores.find(p => p.id === id);
-                        if (prov) {
-                            const q = query(collection(db, 'reservas'), where('codigoProveedor', '==', prov.codigo));
-                            const snap = await getDocs(q);
-                            for (const doc of snap.docs) {
-                                await deleteDoc(doc.ref);
-                            }
-                        }
-                        
-                        // Eliminar proveedor
-                        await deleteDoc(doc(db, 'proveedores', id));
-                        mostrarNotificacion('✅ Proveedor eliminado', 'success');
-                    } catch (error) {
-                        mostrarNotificacion('❌ Error: ' + error.message, 'error');
-                    }
-                }
-            };
-
-            // ============================================
-            // INICIAR APP
-            // ============================================
-            console.log('🚀 ProveApp iniciada - Firebase conectado ✅');
-            renderLogin();
-
-        } catch (error) {
-            console.error('❌ Error en Firebase:', error);
-            document.getElementById('app').innerHTML = `
-                <div class="min-h-screen bg-red-100 flex items-center justify-center p-4">
-                    <div class="bg-white rounded-lg p-8 max-w-md text-center shadow-lg">
-                        <h2 class="text-2xl font-bold text-red-600 mb-4">❌ Error de Firebase</h2>
-                        <p class="text-gray-700 mb-4">${error.message}</p>
-                        <button onclick="location.reload()" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold">
-                            🔄 Recargar
-                        </button>
+                    <div>
+                        <label>Hora Inicio</label>
+                        <input type="time" id="formHoraInicio">
                     </div>
                 </div>
-            `;
+                <div class="form-grid">
+                    <div>
+                        <label>Hora Final</label>
+                        <input type="time" id="formHoraFinal">
+                    </div>
+                    <div>
+                        <label>Monto ($)</label>
+                        <input type="number" id="formMonto" placeholder="500">
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div>
+                        <label>Salón</label>
+                        <input type="text" id="formSalon" placeholder="Principal">
+                    </div>
+                    <div>
+                        <label>Vestimenta</label>
+                        <input type="text" id="formVestimenta" placeholder="Formal">
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label>Notas</label>
+                    <textarea id="formNotas" placeholder="Notas..."></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button onclick="guardarReserva()">💾 Guardar</button>
+                    <button onclick="cancelarFormulario()" style="background: #999;">✕ Cancelar</button>
+                </div>
+            </div>
+
+            <h2>📋 Mis Reservas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Horario</th>
+                        <th>Salón</th>
+                        <th>Monto</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaReservasBody">
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #999;">Cargando...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Proveedores (Admin) -->
+        <div id="tabProveedores" class="tab-content">
+            <div class="form-container">
+                <h2>➕ Crear Proveedor</h2>
+                <div class="form-grid">
+                    <div>
+                        <label>Nombre</label>
+                        <input type="text" id="adminNombreProveedor" placeholder="Juan García">
+                    </div>
+                    <div>
+                        <label>Email</label>
+                        <input type="email" id="adminEmailProveedor" placeholder="juan@email.com">
+                    </div>
+                </div>
+                <button onclick="crearProveedor()" style="margin-top: 10px;">🔑 Generar Código</button>
+            </div>
+
+            <h2>📋 Proveedores</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Código</th>
+                        <th>Reservas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaProveedoresBody">
+                    <tr>
+                        <td colspan="4" style="text-align: center;">Sin proveedores</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Todas las Reservas (Admin) -->
+        <div id="tabTodasReservas" class="tab-content">
+            <h2>📊 Todas las Reservas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Proveedor</th>
+                        <th>Fecha</th>
+                        <th>Horario</th>
+                        <th>Salón</th>
+                        <th>Monto</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaTodasReservasBody">
+                    <tr>
+                        <td colspan="5" style="text-align: center;">Sin reservas</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div id="notification" class="notification"></div>
+
+<script type="module">
+    // ============================================
+    // IMPORTAR FIREBASE MÓDULOS ES
+    // ============================================
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { 
+        getFirestore, 
+        collection, 
+        addDoc, 
+        getDocs, 
+        updateDoc, 
+        doc, 
+        deleteDoc, 
+        onSnapshot, 
+        where, 
+        query,
+        limit 
+    } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    // ============================================
+    // CONFIGURACIÓN FIREBASE
+    // ============================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyAMB9h7cNxaSiTbrjYfbHaA58QDgqbAayM",
+        authDomain: "proveapp-35793.firebaseapp.com",
+        projectId: "proveapp-35793",
+        storageBucket: "proveapp-35793.firebasestorage.app",
+        messagingSenderId: "734706343214",
+        appId: "1:734706343214:web:c6acde37c1d491864a6ebf"
+    };
+
+    // ============================================
+    // INICIALIZAR FIREBASE
+    // ============================================
+    console.log('🔥 Inicializando Firebase...');
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    console.log('✅ Firebase inicializado correctamente');
+    console.log('✅ Firestore cargó');
+    console.log('✅ Conexión a DB: ✅');
+    console.log('✅ Config projectId:', firebaseConfig.projectId);
+
+    // ============================================
+    // ESTADO GLOBAL
+    // ============================================
+    let usuarioActual = null;
+    let rolActual = null;
+    let proveedorActual = null;
+    let reservas = [];
+    let proveedores = [];
+
+    // ============================================
+    // CARGAR DATOS DESDE FIREBASE (SIN ÍNDICES)
+    // ============================================
+    async function cargarProveedores() {
+        try {
+            const snap = await getDocs(collection(db, 'proveedores'));
+            proveedores = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            console.log('✅ Proveedores cargados:', proveedores.length);
+        } catch (error) {
+            console.error('❌ Error cargando proveedores:', error);
         }
-    </script>
+    }
+
+    async function cargarReservas() {
+        try {
+            // Cargar TODAS las reservas (sin where + orderBy que necesita índice)
+            const snap = await getDocs(collection(db, 'reservas'));
+            let todasReservas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            
+            // Filtrar y ordenar EN MEMORIA (no en Firestore)
+            if (proveedorActual) {
+                reservas = todasReservas
+                    .filter(r => r.codigoProveedor === proveedorActual)
+                    .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+            } else {
+                reservas = todasReservas;
+            }
+            
+            console.log('✅ Reservas cargadas:', reservas.length);
+            actualizarUI();
+        } catch (error) {
+            console.error('❌ Error cargando reservas:', error);
+            mostrarNotificacion('Error: ' + error.message, 'error');
+        }
+    }
+
+    // Escuchar cambios en tiempo real
+    onSnapshot(collection(db, 'proveedores'), () => { 
+        cargarProveedores().then(() => { 
+            if (rolActual === 'admin') renderAdmin(); 
+        }); 
+    });
+
+    onSnapshot(collection(db, 'reservas'), () => { 
+        cargarReservas();
+    });
+
+    // ============================================
+    // UTILIDADES
+    // ============================================
+    function generarCodigoProveedor() {
+        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let codigo = 'PROV-';
+        for (let i = 0; i < 6; i++) {
+            codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+        }
+        return codigo;
+    }
+
+    function mostrarNotificacion(msg, tipo) {
+        const notif = document.getElementById('notification');
+        notif.textContent = msg;
+        notif.className = `notification show ${tipo}`;
+        setTimeout(() => notif.classList.remove('show'), 3000);
+    }
+
+    function loginProveedor() {
+        const codigo = document.getElementById('proveedorCodigo').value.trim();
+        if (!codigo) {
+            mostrarNotificacion('Ingresa tu código', 'error');
+            return;
+        }
+
+        const proveedor = proveedores.find(p => p.codigo === codigo);
+        if (!proveedor) {
+            mostrarNotificacion('❌ Código no encontrado', 'error');
+            return;
+        }
+
+        usuarioActual = proveedor.nombre;
+        proveedorActual = codigo;
+        rolActual = 'proveedor';
+        mostrarApp();
+        cargarReservas();
+        mostrarNotificacion('¡Bienvenido ' + usuarioActual + '!', 'success');
+    }
+
+    function loginAdmin() {
+        const user = document.getElementById('adminUser').value;
+        const pass = document.getElementById('adminPass').value;
+
+        if (user !== 'admin' || pass !== 'admin123') {
+            mostrarNotificacion('Credenciales incorrectas', 'error');
+            return;
+        }
+
+        usuarioActual = 'ADMIN';
+        rolActual = 'admin';
+        mostrarApp();
+        mostrarNotificacion('¡Bienvenido Admin!', 'success');
+    }
+
+    function logout() {
+        if (confirm('¿Cerrar sesión?')) {
+            usuarioActual = null;
+            rolActual = null;
+            proveedorActual = null;
+            document.getElementById('appContainer').classList.remove('active');
+            document.getElementById('loginContainer').style.display = 'block';
+        }
+    }
+
+    function mostrarApp() {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('appContainer').classList.add('active');
+        document.getElementById('usuarioNombre').textContent = usuarioActual;
+
+        const tabsContainer = document.getElementById('tabsContainer');
+        tabsContainer.innerHTML = '';
+
+        if (rolActual === 'proveedor') {
+            tabsContainer.innerHTML = '<button class="tab-button active" onclick="cambiarTab(\'tabReservas\')">📋 Mis Reservas</button>';
+            document.getElementById('formContainer').style.display = 'block';
+        } else {
+            tabsContainer.innerHTML = `
+                <button class="tab-button active" onclick="cambiarTab('tabReservas')">📋 Reservas</button>
+                <button class="tab-button" onclick="cambiarTab('tabProveedores')">👥 Proveedores</button>
+                <button class="tab-button" onclick="cambiarTab('tabTodasReservas')">📊 Todas</button>
+            `;
+            document.getElementById('formContainer').style.display = 'none';
+            renderAdmin();
+        }
+    }
+
+    window.cambiarTab = function(tabId) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.target.classList.add('active');
+    };
+
+    function actualizarUI() {
+        const total = reservas.length;
+        const confirmadas = reservas.filter(r => r.estado === 'confirmada').length;
+        const ingresos = reservas.filter(r => r.estado === 'confirmada').reduce((s, r) => s + (parseFloat(r.monto) || 0), 0);
+
+        document.getElementById('statsContainer').innerHTML = `
+            <div class="stat-card">
+                <h3>📊 Total</h3>
+                <div class="value">${total}</div>
+            </div>
+            <div class="stat-card">
+                <h3>✅ Confirmadas</h3>
+                <div class="value">${confirmadas}</div>
+            </div>
+            <div class="stat-card">
+                <h3>❌ Canceladas</h3>
+                <div class="value">${total - confirmadas}</div>
+            </div>
+            <div class="stat-card">
+                <h3>💰 Ingresos</h3>
+                <div class="value">$${ingresos.toFixed(0)}</div>
+            </div>
+        `;
+
+        const tbody = document.getElementById('tablaReservasBody');
+        if (reservas.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999;">No hay reservas</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = reservas.map((r, idx) => `
+            <tr>
+                <td>${r.fecha}</td>
+                <td>${r.horaInicio} - ${r.horaFinal}</td>
+                <td>${r.salon}</td>
+                <td>$${parseFloat(r.monto).toFixed(0)}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-small" onclick="editarReserva(${idx})">✏️</button>
+                        <button class="btn-small btn-delete" onclick="eliminarReserva('${r.id}')">🗑️</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    window.guardarReserva = async function() {
+        const fecha = document.getElementById('formFecha').value;
+        const horaInicio = document.getElementById('formHoraInicio').value;
+        const horaFinal = document.getElementById('formHoraFinal').value;
+        const salon = document.getElementById('formSalon').value;
+        const vestimenta = document.getElementById('formVestimenta').value;
+        const monto = document.getElementById('formMonto').value;
+        const notas = document.getElementById('formNotas').value;
+
+        if (!fecha || !horaInicio || !horaFinal || !salon || !monto) {
+            mostrarNotificacion('Completa todos los campos', 'error');
+            return;
+        }
+
+        try {
+            await addDoc(collection(db, 'reservas'), {
+                codigoProveedor: proveedorActual,
+                nombreProveedor: usuarioActual,
+                fecha,
+                horaInicio,
+                horaFinal,
+                salon,
+                vestimenta,
+                monto,
+                notas,
+                estado: 'confirmada',
+                createdAt: new Date()
+            });
+
+            mostrarNotificacion('✅ Reserva guardada', 'success');
+            limpiarFormulario();
+            cargarReservas();
+        } catch (error) {
+            mostrarNotificacion('Error: ' + error.message, 'error');
+        }
+    };
+
+    window.eliminarReserva = async function(id) {
+        if (!confirm('¿Eliminar reserva?')) return;
+        
+        try {
+            await deleteDoc(doc(db, 'reservas', id));
+            mostrarNotificacion('✅ Eliminada', 'success');
+            cargarReservas();
+        } catch (error) {
+            mostrarNotificacion('Error: ' + error.message, 'error');
+        }
+    };
+
+    window.editarReserva = function(index) {
+        const r = reservas[index];
+        document.getElementById('formFecha').value = r.fecha;
+        document.getElementById('formHoraInicio').value = r.horaInicio;
+        document.getElementById('formHoraFinal').value = r.horaFinal;
+        document.getElementById('formSalon').value = r.salon;
+        document.getElementById('formVestimenta').value = r.vestimenta;
+        document.getElementById('formMonto').value = r.monto;
+        document.getElementById('formNotas').value = r.notas;
+        document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    window.limpiarFormulario = function() {
+        document.getElementById('formFecha').value = '';
+        document.getElementById('formHoraInicio').value = '';
+        document.getElementById('formHoraFinal').value = '';
+        document.getElementById('formSalon').value = '';
+        document.getElementById('formVestimenta').value = '';
+        document.getElementById('formMonto').value = '';
+        document.getElementById('formNotas').value = '';
+    };
+
+    window.cancelarFormulario = function() {
+        limpiarFormulario();
+    };
+
+    window.crearProveedor = async function() {
+        const nombre = document.getElementById('adminNombreProveedor').value.trim();
+        if (!nombre) {
+            mostrarNotificacion('Ingresa nombre', 'error');
+            return;
+        }
+
+        const codigo = generarCodigoProveedor();
+        
+        try {
+            await addDoc(collection(db, 'proveedores'), {
+                nombre,
+                codigo,
+                email: document.getElementById('adminEmailProveedor').value,
+                descripcion: '',
+                fechaCreacion: new Date()
+            });
+
+            mostrarNotificacion(`✅ Proveedor creado: ${codigo}`, 'success');
+            document.getElementById('adminNombreProveedor').value = '';
+            document.getElementById('adminEmailProveedor').value = '';
+        } catch (error) {
+            mostrarNotificacion('Error: ' + error.message, 'error');
+        }
+    };
+
+    function renderAdmin() {
+        actualizarTablaProveedores();
+        actualizarTablaTodasReservas();
+    }
+
+    function actualizarTablaProveedores() {
+        const tbody = document.getElementById('tablaProveedoresBody');
+        if (!tbody) return;
+
+        if (proveedores.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Sin proveedores</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = proveedores.map(p => `
+            <tr>
+                <td>${p.nombre}</td>
+                <td><strong>${p.codigo}</strong></td>
+                <td>${reservas.filter(r => r.codigoProveedor === p.codigo).length}</td>
+                <td>
+                    <button class="btn-small btn-delete" onclick="eliminarProveedor('${p.id}')">🗑️</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function actualizarTablaTodasReservas() {
+        const tbody = document.getElementById('tablaTodasReservasBody');
+        if (!tbody) return;
+
+        if (reservas.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Sin reservas</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = reservas.map(r => `
+            <tr>
+                <td>${r.nombreProveedor}</td>
+                <td>${r.fecha}</td>
+                <td>${r.horaInicio} - ${r.horaFinal}</td>
+                <td>${r.salon}</td>
+                <td>$${parseFloat(r.monto).toFixed(0)}</td>
+            </tr>
+        `).join('');
+    }
+
+    window.eliminarProveedor = async function(id) {
+        if (!confirm('¿Eliminar proveedor?')) return;
+        
+        try {
+            await deleteDoc(doc(db, 'proveedores', id));
+            mostrarNotificacion('✅ Eliminado', 'success');
+        } catch (error) {
+            mostrarNotificacion('Error: ' + error.message, 'error');
+        }
+    };
+
+    window.loginProveedor = loginProveedor;
+    window.loginAdmin = loginAdmin;
+    window.logout = logout;
+
+    // ============================================
+    // INICIAR
+    // ============================================
+    console.log('✅ ProveApp cargada - Firebase conectado ✅');
+    cargarProveedores();
+</script>
+
 </body>
 </html>
